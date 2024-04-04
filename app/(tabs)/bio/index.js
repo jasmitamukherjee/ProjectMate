@@ -7,14 +7,25 @@ import { StyleSheet, Text, View, ScrollView,
   Alert,
   TouchableOpacity,
   } from 'react-native'
-import React, { useState } from 'react'
+  import "core-js/stable/atob";
+import {jwtDecode} from "jwt-decode";
+import React, { useEffect, useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import Carousel from 'react-native-snap-carousel';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const index = () => {
   const [option, setOption] = useState("Description");
   const [description, setDescription] = useState("");
   const [activeSlide, setActiveSlide] = React.useState(0);
+  const [userId,setUserId] = useState("");
+  const [selectedKeywords,setSelectedKeywords] = useState([])
+  const [lookingOptions,setLookingOptions] = useState([])
+  const [imageUrl,setImageUrl] = useState("")
+  const [images,setImages] = useState([])
+console.log("User id",userId)
 
   const profileImages = [
     {
@@ -145,6 +156,106 @@ const index = () => {
       description: "Interested in collaborating on innovative and creative projects.",
     },
   ];
+
+const handleToggleKeywords= (keywords) =>{
+  // console.log("keywords",keywords)
+  if(selectedKeywords.includes(keywords)){
+    removeKeywords(keywords)
+  }else{
+    addKeywords(keywords)
+  }
+
+}
+const handleOption= (lookingFor)=>{
+  if(lookingOptions.includes(lookingFor)){
+    removeLookingFor(lookingFor)
+  }
+  else{
+    addLookingFor(lookingFor)
+  }
+}
+const addLookingFor= async (lookingFor)=>{
+  try {
+    const response = await axios.put(
+      `http://192.168.1.4:5000/users/${userId}/looking-for`,
+      {
+        lookingFor: lookingFor,
+      }
+    );
+
+    console.log(response.data);
+
+    if (response.status == 200) {
+      setLookingOptions([...lookingOptions, lookingFor]);
+    }
+
+    
+  } catch (error) {
+    console.log("Error adding looking for",error)
+  }
+}
+
+const removeLookingFor = async (lookingFor) => {
+  try {
+    const response = await axios.put(
+      `http://192.168.1.4:5000/users/${userId}/looking-for/remove`,
+      {
+        lookingFor: lookingFor,
+      }
+    );
+
+    console.log(response.data); // Log the response for confirmation
+
+    // Handle success or update your app state accordingly
+    if (response.status === 200) {
+      setLookingOptions(lookingOptions.filter((item) => item !== lookingFor));
+    }
+  } catch (error) {
+    console.error("Error removing looking for:", error);
+    // Handle error scenarios
+  }
+};
+const addKeywords= async (keywords)=>{
+  try {
+    const response = await axios.put(
+      `http://192.168.1.4:5000/users/${userId}/keywords/add`,
+      {
+        keywords: keywords,
+      }
+    );
+
+    console.log(response.data);
+
+    if (response.status == 200) {
+      setSelectedKeywords([...selectedKeywords, keywords]);
+    }
+    
+  } catch (error) {
+    console.log("Error adding keywords",error)
+    
+  }
+}
+const removeKeywords = async (keywords)=>{
+try {
+  const response = await axios.put(
+    `http://192.168.1.4:5000/users/${userId}/keywords/remove`,
+    {
+      keywords: keywords,
+    }
+  );
+
+  console.log(response.data);
+
+  if (response.status == 200) {
+    setSelectedKeywords(selectedKeywords.filter((item) => item !== keywords));
+  }
+  
+} catch (error) {
+  console.log("Error removing keywords",error)
+  
+}
+}
+
   const renderImageCarousel = ({item}) =>{
     return(
     <View  style={{ width: "100%", justifyContent: "center", alignItems: "center" }}>
@@ -158,6 +269,62 @@ const index = () => {
         <Text style={{fontFamily:"monospace",position:"absolute",top:10,right:10}}>{activeSlide + 1}/{profileImages.length}</Text>
     </View>
   )}
+
+
+  useEffect(()=>{
+    const fetchUser= async ()=>{
+      const token = await AsyncStorage.getItem("auth");
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.userId;
+      setUserId(userId)
+    }
+    fetchUser();
+
+
+  },[])
+  const fetchUserDescription= async ()=>{
+    try { const response = await axios.get(`http://192.168.1.4:5000/users/${userId}`);
+    console.log(response);
+    const user = response.data;
+
+    setDescription(user?.user?.description);
+    setSelectedKeywords(user.user?.keywords);
+    setImages(user?.user.projectImages);
+    setLookingOptions(user?.user.lookingFor)
+
+      
+    } catch (error) {
+      console.log("Error finding user description",error)
+      
+    }
+  }
+  useEffect(()=>{
+    if(userId){
+      fetchUserDescription()
+    }
+
+  },[userId])
+  const updateUserDescripton= async ()=>{
+    try {
+      const response = await axios.put(
+        `http://192.168.1.4:5000/users/${userId}/description`,
+        {
+          description: description,
+        }
+      );
+
+      console.log(response.data);
+
+      if (response.status === 200) {
+        Alert.alert("Success", "Description updated successfully");
+      }
+      
+    } catch (error) {
+      console.log("Error updating description for project",error)
+      
+    }
+  }
+  // console.log("desc",description)
   return (
     <ScrollView>
       <View style={{height: "auto"}}>
@@ -256,13 +423,14 @@ const index = () => {
             borderRadius: 10,
             height: 300,
           }}>
-            <TextInput  value={description} onChangeText={(text)=>setDescription(text)}
+            <TextInput multiline value={description} onChangeText={(text)=>setDescription(text)}
             style={{
              
                 fontFamily: "monospace",
                 fontSize: description ? 15 : 15,
               }} placeholder='Write the description of your project.'/>
-              <Pressable  style={{
+              <Pressable 
+              onPress={updateUserDescripton} style={{
                 marginTop: "auto",
                 flexDirection: "row",
                 alignItems: "center",
@@ -327,7 +495,9 @@ const index = () => {
     <View>
       {keywords?.map((item, index) => {
         return (
-          <Pressable style={{
+          <Pressable
+          onPress={()=>handleToggleKeywords(item?.name)}
+          style={{
             backgroundColor: "#edd5e5",
             padding: 10,
             marginVertical: 10,
@@ -338,7 +508,11 @@ const index = () => {
                     alignItems: "center",
                     justifyContent: "center",
                   }}>
-              <Text style={{fontFamily:"monospace",fontSize:16,fontWeight:"bold"}}>{item?.name}</Text>
+              <Text style={{fontFamily:"monospace",fontSize:16,fontWeight:"bold",flex:1}}>{item?.name}</Text>
+              {selectedKeywords.includes(item?.name) && (
+                <AntDesign name="checkcircle" size={18} color="black" />
+
+              )}
             </View>
             <Text style={{fontFamily:"monospace"}}>{item?.description}</Text>
           </Pressable>
@@ -356,38 +530,38 @@ const index = () => {
       data={data}
       renderItem={({ item }) => {
         return (
-          <Pressable style={{
-            // backgroundColor: lookingOptions.includes(item?.name)
-            //   ? "#fd5c63"
-            //   : "white",
-            backgroundColor:"white",
+          <Pressable 
+          onPress={()=> handleOption(item?.name)}
+          style={{
+            backgroundColor: lookingOptions.includes(item?.name)
+              ? "#4c0a4f"
+              : "white",
             padding: 16,
             justifyContent: "center",
             alignItems: "center",
             width: 150,
             margin: 10,
             borderRadius: 5,
-            borderColor: "#edd5e5",
+            borderColor: "#4c0a4f",
             // borderWidth: lookingOptions.includes(item?.name)
             //   ? "transparent"
             //   : 0.7,
-            borderWidth:0.7
           }}>
             <View>
               <Text style={{fontFamily:"monospace",  textAlign: "center",
                         fontWeight: "bold",
                         fontSize: 13,
-                        color:"black"}}>{item?.name}</Text>
+                        color:lookingOptions.includes(item?.name)?"white":"black"}}>{item?.name}</Text>
               <Text style={{fontFamily:"monospace",  textAlign: "center",
                         width: 140,
                         marginTop: 10,
                         fontSize: 13,
-                        color:"gray"}}>{item?.description}</Text>
+                        color:lookingOptions.includes(item?.name)?"white":"gray"}}>{item?.description}</Text>
             </View>
           </Pressable>
         );
       }}
-      keyExtractor={(item, index) => index.toString()}
+      // keyExtractor={(item, index) => index.toString()}
     />
     
   )}

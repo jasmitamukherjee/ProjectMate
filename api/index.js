@@ -124,3 +124,169 @@ app.put("/users/:userId/gender", async (req, res) => {
       res.status(500).json({ message: "Error updating user gender", error });
     }
   });
+
+  //endpoint to update description
+  app.put("/users/:userId/description", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { description } = req.body;
+  
+      const user = await User.findByIdAndUpdate(
+        userId,
+        {
+          description: description,
+        },
+        { new: true }
+      );
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      return res
+        .status(200)
+        .json({ message: "User description updated succesfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Error updating user description" });
+    }
+  });
+
+ //fetch users data
+app.get("/users/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(500).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching the user details" });
+  }
+}); 
+
+//end point to add keyword for a user in the backend
+app.put("/users/:userId/keywords/add", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { keywords } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { keywords: keywords } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Keywords updated succesfully", user });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding the keywords" });
+  }
+});
+
+//endpoint to remove a particular keyword for the user
+app.put("/users/:userId/keywords/remove", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const { keywords } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { keywords: keywords } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Keywords removed succesfully", user });
+  } catch (error) {
+    return res.status(500).json({ message: "Error removing keyword" });
+  }
+});
+
+//end point to add a lookingFor  for a user in the backend
+app.put("/users/:userId/looking-for", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { lookingFor } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $addToSet: { lookingFor: lookingFor },
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "No user" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Looking for updated succesfully".user });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating looking for", error });
+  }
+});
+
+//endpoint to remove looking for in the backend
+app.put("/users/:userId/looking-for/remove", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { lookingFor } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $pull: { lookingFor: lookingFor },
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "No user" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Looking for updated succesfully".user });
+  } catch (error) {
+    res.status(500).json({ message: "Error removing looking for", error });
+  }
+});
+
+//endpoint for project images 
+app.post("/users/:userId/project-images", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { imageUrl } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.projectImages.push(imageUrl);
+
+    await user.save();
+
+    return res.status(200).json({ message: "Image has been added", user });
+  } catch (error) {
+    res.status(500).json({ message: "Error addding the profile images" });
+  }
+});
