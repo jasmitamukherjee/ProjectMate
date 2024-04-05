@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
-    "@react-native-async-storage/async-storage": "1.21.0",
+    "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-navigation/native": "^6.1.17",
     "axios": "^1.6.8",
     "core-js": "^3.36.1",
@@ -28,7 +28,8 @@
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-snap-carousel": "^3.9.1",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
