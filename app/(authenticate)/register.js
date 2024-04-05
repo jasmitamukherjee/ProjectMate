@@ -18,17 +18,8 @@ const register = () => {
       email: email,
       password: password,
     };
-    // axios.post("http://192.168.1.4:5000/register",user).then((response)=>{
-    //   console.log(response)
-    //   Alert.alert('Registration successful', 'You have been registered successfully');
-    //   setEmail("")
-    //   setName("")
-    //   setPassword("")
-    // }).catch((error)=>{
-    //   console.log("Error while registering",error)
-    //   Alert.alert("Registeration failed","An error occurred while registering")
-    // })/
-    axios.post("http://192.168.1.4:5000/register", user)
+ 
+    axios.post("http://10.24.68.215:5000/register", user)
   .then((response) => {
     console.log(response);
     Alert.alert('Registration successful', 'You have been registered successfully');

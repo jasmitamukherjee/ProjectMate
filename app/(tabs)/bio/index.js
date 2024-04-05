@@ -157,6 +157,75 @@ console.log("User id",userId)
     },
   ];
 
+  const profiles = [
+    {
+      id: "0",
+      name: "Shreya Rao",
+      description:
+        "Shreya's project is a marketplace connecting local artisans with customers seeking unique handmade products. Using a swipe-based interface, users can discover handcrafted items ranging from jewelry to home decor. Developed with React JS, JavaScript, HTML, CSS, React Native, and React Native CLI.",
+      projectImages: [
+        {
+          id: "0",
+          image:
+            "https://images.pexels.com/photos/3236651/pexels-photo-3236651.jpeg?auto=compress&cs=tinysrgb&w=800",
+        },
+      ],
+    },
+    {
+      id: "1",
+      name: "Aditi K",
+      description:
+        "Aditi's project is an online platform connecting pet owners with reliable pet sitters and dog walkers in their area. Utilizing a swipe-based interface, users can browse through profiles, read reviews, and book pet care services with ease. Built using React JS, JavaScript, HTML, CSS, React Native, and React Native CLI.",
+      projectImages: [
+        {
+          id: "0",
+          image:
+            "https://images.pexels.com/photos/1485031/pexels-photo-1485031.jpeg?auto=compress&cs=tinysrgb&w=800",
+        },
+      ],
+    },
+    {
+      id: "10",
+      name: "Rheaa Thakur",
+      description:
+        "Rheaa's project is a virtual fitness platform that connects users with personal trainers for customized workout sessions. Featuring a swipe-based interface, users can find fitness instructors, schedule sessions, and track their progress seamlessly. Developed with React JS, JavaScript, HTML, CSS, React Native, and React Native CLI.",
+      projectImages: [
+        {
+          id: "0",
+          image:
+            "https://images.pexels.com/photos/1844012/pexels-photo-1844012.jpeg?auto=compress&cs=tinysrgb&w=800",
+        },
+      ],
+    },
+    {
+      id: "3",
+      name: "Manisha Singha",
+      description:
+        "Manisha's project is a language exchange platform connecting language learners with native speakers worldwide. Through a swipe-based interface, users can find language partners, engage in conversations, and improve their language skills together. Crafted with React JS, JavaScript, HTML, CSS, React Native, and React Native CLI.",
+      projectImages: [
+        {
+          id: "0",
+          image:
+            "https://images.pexels.com/photos/1642228/pexels-photo-1642228.jpeg?auto=compress&cs=tinysrgb&w=800",
+        },
+      ],
+    },
+    {
+      id: "4",
+      name: "Nisha J",
+      description:
+        "Nisha's project is a volunteering platform connecting individuals with local nonprofit organizations and community projects. Using a swipe-based interface, users can discover volunteer opportunities, sign up for events, and make a positive impact in their community. Engineered with React JS, JavaScript, HTML, CSS, React Native, and React Native CLI.",
+      projectImages: [
+        {
+          id: "0",
+          image:
+            "https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&w=800",
+        },
+      ],
+    },
+  ];
+  
+
 const handleToggleKeywords= (keywords) =>{
   // console.log("keywords",keywords)
   if(selectedKeywords.includes(keywords)){
@@ -177,7 +246,7 @@ const handleOption= (lookingFor)=>{
 const addLookingFor= async (lookingFor)=>{
   try {
     const response = await axios.put(
-      `http://192.168.1.4:5000/users/${userId}/looking-for`,
+      `http://10.24.68.215:5000/users/${userId}/looking-for`,
       {
         lookingFor: lookingFor,
       }
@@ -198,7 +267,7 @@ const addLookingFor= async (lookingFor)=>{
 const removeLookingFor = async (lookingFor) => {
   try {
     const response = await axios.put(
-      `http://192.168.1.4:5000/users/${userId}/looking-for/remove`,
+      `http://10.24.68.215:5000/users/${userId}/looking-for/remove`,
       {
         lookingFor: lookingFor,
       }
@@ -218,7 +287,7 @@ const removeLookingFor = async (lookingFor) => {
 const addKeywords= async (keywords)=>{
   try {
     const response = await axios.put(
-      `http://192.168.1.4:5000/users/${userId}/keywords/add`,
+      `http://10.24.68.215:5000/users/${userId}/keywords/add`,
       {
         keywords: keywords,
       }
@@ -238,7 +307,7 @@ const addKeywords= async (keywords)=>{
 const removeKeywords = async (keywords)=>{
 try {
   const response = await axios.put(
-    `http://192.168.1.4:5000/users/${userId}/keywords/remove`,
+    `http://10.24.68.215:5000/users/${userId}/keywords/remove`,
     {
       keywords: keywords,
     }
@@ -265,8 +334,8 @@ try {
           height: 290,
           borderRadius: 10,
           transform: [{ rotate: "-5deg" }],
-        }} source={{uri:item?.image}}/>
-        <Text style={{fontFamily:"monospace",position:"absolute",top:10,right:10}}>{activeSlide + 1}/{profileImages.length}</Text>
+        }} source={{uri:item}}/>
+        <Text style={{fontFamily:"monospace",position:"absolute",top:10,right:10}}>{activeSlide + 1}/{images.length}</Text>
     </View>
   )}
 
@@ -283,7 +352,7 @@ try {
 
   },[])
   const fetchUserDescription= async ()=>{
-    try { const response = await axios.get(`http://192.168.1.4:5000/users/${userId}`);
+    try { const response = await axios.get(`http://10.24.68.215:5000/users/${userId}`);
     console.log(response);
     const user = response.data;
 
@@ -307,7 +376,7 @@ try {
   const updateUserDescripton= async ()=>{
     try {
       const response = await axios.put(
-        `http://192.168.1.4:5000/users/${userId}/description`,
+        `http://10.24.68.215:5000/users/${userId}/description`,
         {
           description: description,
         }
@@ -325,6 +394,27 @@ try {
     }
   }
   // console.log("desc",description)
+  const handleAddImage= async ()=>{
+ 
+      try{
+        const response = await axios.post(`http://10.24.68.215:5000/users/${userId}/project-images`,{
+            imageUrl:imageUrl
+        });
+
+        console.log(response);
+
+        setImageUrl("");
+      
+    } catch (error) {
+      console.log("Error posting image",error)
+      
+    }
+  }
+  const getRandomImage = () => {
+    const randomIndex = Math.floor(Math.random() * images.length);
+    return images[randomIndex]
+}
+const randomImage = getRandomImage()
   return (
     <ScrollView>
       <View style={{height: "auto"}}>
@@ -360,7 +450,7 @@ try {
                   resizeMode: "cover",
                 }}
                 source={{
-                    uri:"https://cdn4.vectorstock.com/i/1000x1000/23/33/girl-user-icon-flat-vector-19152333.jpg",
+                    uri:randomImage,
                 }}
               />
                <Text style={{fontFamily:"monospace",fontWeight:"bold",fontSize:17,marginTop:6}}>Pune</Text>
@@ -458,12 +548,12 @@ try {
       <View style={{ marginHorizontal: 14 }}>
         { option == "Photos" && (
           <View>
-            <Carousel data={profileImages} renderItem={renderImageCarousel} sliderWidth={350} itemWidth={300} onSnapToItem={(index)=> setActiveSlide(index)}/>
+            <Carousel data={images} renderItem={renderImageCarousel} sliderWidth={350} itemWidth={300} onSnapToItem={(index)=> setActiveSlide(index)}/>
             <View style={{marginTop:25}}>
               <Text style={{fontFamily:"monospace"}}>Add a picture of your project.</Text>
               <View style={{flexDirection:"row",alignItems:"center",gap:5,paddingVertical:5,borderRadius:5,marginTop:10,backgroundColor:"#dcdcdc"}}>
               <Ionicons style={{marginLeft:8,color:"gray"}} name="images" size={24} color="black" />
-              <TextInput style={{fontFamily:"monospace",color:"gray",marginVertical:10,width:300}} placeholder='Enter your image url'/>
+              <TextInput value={imageUrl} onChangeText={(text)=>setImageUrl(text)} style={{fontFamily:"monospace",color:"gray",marginVertical:10,width:300}} placeholder='Enter your image url'/>
               </View>
               {/* <Button
   title='Add image'
@@ -478,9 +568,10 @@ try {
           borderRadius: 5,
           alignItems: 'center',
         }}
-        onPress={() => {
-          // Handle button press here
-        }}>
+        onPress={
+          
+          handleAddImage
+        }>
         <Text style={{ color: '#4c0a4f',fontWeight:"bold" ,fontFamily:"monospace",fontSize:15}}>Add image</Text>
       </TouchableOpacity>
 

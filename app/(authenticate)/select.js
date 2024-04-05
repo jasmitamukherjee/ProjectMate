@@ -24,7 +24,7 @@ const select = () => {
   },[])
   const updateUserGender = async () => {
     try{
-        const response = await axios.put(`http://192.168.1.4:5000/users/${userId}/gender`,{
+        const response = await axios.put(`http://10.24.68.215:5000/users/${userId}/gender`,{
             gender:option
         });
 

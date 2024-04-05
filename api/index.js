@@ -290,3 +290,154 @@ app.post("/users/:userId/project-images", async (req, res) => {
     res.status(500).json({ message: "Error addding the profile images" });
   }
 });
+
+//endpoint to fetch all the profiles for a particular user
+app.get("/profiles", async (req, res) => {
+  const { userId, gender, keywords, lookingFor } = req.query;
+
+  try {
+    // let filter = { gender: gender === "male" ? "female" : "male" }; // For gender filtering
+    let filter= {}
+    // Add filtering based on turnOns and lookingFor arrays
+    if (keywords) {
+      filter.keywords = { $in: keywords };
+    }
+
+    if (lookingFor) {
+      filter.lookingFor = { $in: lookingFor };
+    }
+
+    const currentUser = await User.findById(userId)
+      .populate("matches", "_id")
+      .populate("interested", "_id");
+
+    // Extract IDs of friends
+    const friendIds = currentUser.matches.map((friend) => friend._id);
+
+    // Extract IDs of interested people
+    const interestedIds = currentUser.interested.map((interested) => interested._id);
+
+    const profiles = await User.find(filter)
+      .where("_id")
+      .nin([userId, ...friendIds, ...interestedIds]);
+
+    return res.status(200).json({ profiles });
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching profiles", error });
+  }
+});
+
+
+//send like to mate 
+// app.post("/send-like", async (req, res) => {
+//   const { currentUserId, selectedUserId } = req.body;
+
+//   try {
+//     //update the recepient's friendRequestsArray!
+//     await User.findByIdAndUpdate(selectedUserId, {
+//       $push: { recievedLikes: currentUserId },
+//     });
+//     //update the sender's sentFriendRequests array
+//     await User.findByIdAndUpdate(currentUserId, {
+//       $push: { interested: selectedUserId },
+//     });
+
+//     res.sendStatus(200).json({message:"Like sent"});
+//   } catch (error) {
+//     res.sendStatus(500).json({message:"Error sendinga like"});
+//   }
+// });
+
+//send like to mate 
+app.post("/send-like", async (req, res) => {
+  const { currentUserId, selectedUserId } = req.body;
+
+  try {
+    //update the recepient's friendRequestsArray!
+    await User.findByIdAndUpdate(selectedUserId, {
+      $push: { recievedLikes: currentUserId },
+    });
+    //update the sender's sentFriendRequests array
+    await User.findByIdAndUpdate(currentUserId, {
+      $push: { interested: selectedUserId },
+    });
+
+    res.status(200).json({ message: "Like sent" }); // Send only one response
+  } catch (error) {
+    res.status(500).json({ message: "Error sending a like" }); // Handle errors gracefully
+  }
+});
+
+//ednpoint to get the details of the received Likes
+app.get("/received-likes/:userId/details", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Fetch details of users who liked the current user
+    const receivedLikesDetails = [];
+    for (const likedUserId of user.recievedLikes) {
+      const likedUser = await User.findById(likedUserId);
+      if (likedUser) {
+        receivedLikesDetails.push(likedUser);
+      }
+    }
+
+    res.status(200).json({ receivedLikesDetails });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching received likes details",
+      error: error.message,
+    });
+  }
+});
+
+//endpoint to create a match betweeen two people
+app.post("/create-match", async (req, res) => {
+  try {
+    const { currentUserId, selectedUserId } = req.body;
+
+    //update the selected user's interested array and the matches array
+    await User.findByIdAndUpdate(selectedUserId, {
+      $push: { matches: currentUserId },
+      $pull: { interested: currentUserId },
+    });
+
+    //update the current user's matches array recievedlikes array
+    await User.findByIdAndUpdate(currentUserId, {
+      $push: { matches: selectedUserId },
+      $pull: { recievedLikes: selectedUserId },
+    });
+
+    res.sendStatus(200).json({message:"match made !!"});
+  } catch (error) {
+    res.status(500).json({ message: "Error creating a match", error });
+  }
+});
+
+//endpoint to get all the matches of the particular user
+app.get("/users/:userId/matches", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const matchIds = user.matches;
+
+    const matches = await User.find({ _id: { $in: matchIds } });
+
+    res.status(200).json({ matches });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving the matches", error });
+  }
+});
