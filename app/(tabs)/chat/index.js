@@ -8,6 +8,7 @@ import {jwtDecode} from "jwt-decode";
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
+import UserChat from '../../../components/UserChat';
 const index = () => {
   const router = useRouter()
   const [userId,setUserId] = useState("")
@@ -28,7 +29,7 @@ const index = () => {
   const fetchReceivedLikesDetails= async ()=>{
     try {
       const response = await axios.get(
-        `http://10.24.68.215:5000/received-likes/${userId}/details`
+        `http://192.168.1.3:5000/received-likes/${userId}/details`
       );
 
       console.log(response);
@@ -43,7 +44,7 @@ const index = () => {
   const fetchUserMatches = async ()=>{
     try {
       const response = await axios.get(
-        `http://10.24.68.215:5000/users/${userId}/matches`
+        `http://192.168.1.3:5000/users/${userId}/matches`
       );
 
       const userMatches = response.data.matches;
@@ -70,6 +71,16 @@ const index = () => {
       }
     },[])
   )
+  const handleNavigateToSelect = () => {
+    router.push({
+      pathname: "/chat/select",
+      params: {
+        profiles: JSON.stringify(profiles),
+        userId: userId,
+      },
+    });
+  };
+console.log("userid from index of chat",userId)
   console.log("matches",matches)
    return (
     <View style={{ backgroundColor: "white", flex: 1, padding: 10 }}>
@@ -83,14 +94,7 @@ const index = () => {
         <Ionicons name="chatbubbles" size={25} color="black" />
       </View>
       <Pressable 
-       onPress={() =>
-        router.push({
-          pathname: "/chat/select",
-          params: {
-            profiles: JSON.stringify(profiles),
-            userId: userId,
-          },
-        })
+       onPress={handleNavigateToSelect
       }
       style={{
           marginVertical: 12,
@@ -111,6 +115,11 @@ const index = () => {
         <Text style={{fontFamily:"monospace", fontSize: 17, marginLeft: 10, flex: 1 }}>You have got {profiles.length} likes..</Text>
         <Entypo name="chevron-right" size={24} color="black" />
       </Pressable>
+      <View>
+        {matches?.map((item,index)=>(
+          <UserChat key={index} userId={userId} item={item}/>
+        ))}
+      </View>
     </View>
   )
 }

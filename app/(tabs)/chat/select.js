@@ -9,21 +9,40 @@ const select = () => {
     const router= useRouter()
     const params = useLocalSearchParams();
     const profiles = JSON.parse(params?.profiles);
-    const [userId] = params?.userId
-    const handleMatch = async (selectedUserId) => {
-        try {
-          await axios.post("http://10.24.68.215:5000/create-match", {
-            currentUserId: userId,
-            selectedUserId: selectedUserId,
-          });
+    const userId = params?.userId
+    // const handleMatch = async (selectedUserId) => {
+    //     try {
+    //       await axios.post("http://192.168.1.3:5000/create-match", {
+    //         currentUserId: userId,
+    //         selectedUserId: selectedUserId,
+    //       });
     
-          setTimeout(() => {
-            router.push("/chat");
-          }, 500);
-        } catch (error) {
-          console.log("error", error);
-        }
-      };
+    //       setTimeout(() => {
+    //         router.push("/chat");
+    //       }, 500);
+    //     } catch (error) {
+    //       console.log("error creating match", error);
+    //     }
+    //   };
+    const handleMatch = async (selectedUserId) => {
+      console.log("selected id",selectedUserId)
+      // console.log("user id",userId)
+     
+      try {
+        await axios.post("http://192.168.1.3:5000/create-match", {
+          currentUserId: userId,
+          selectedUserId: selectedUserId,
+        });
+  setTimeout(()=>{
+    router.push("/chat");
+
+
+  },500)
+      } catch (error) {
+        console.log("Error creating match", error);
+      }
+    };
+    // console.log("user id from inside likes",userId)
   return (
     <ScrollView style={{ backgroundColor: "white", flex: 1, padding: 10 }}>
 
@@ -44,7 +63,7 @@ const select = () => {
 {profiles?.length > 0 ? (
         <View style={{ marginTop: 20 }}>
           {profiles?.map((item, index) => (
-            <View style={{ marginVertical: 15 }}>
+            <View key={index} style={{ marginVertical: 15 }}>
               <ScrollView showsHorizontalScrollIndicator={false} horizontal>
                 <View
                   style={{
@@ -72,7 +91,7 @@ const select = () => {
                   </View>
 
                   {item?.projectImages?.slice(0, 1).map((item, index) => (
-                    <Image
+                    <Image key={index}
                       style={{
                         width: 280,
                         height: 280,
@@ -116,8 +135,8 @@ const select = () => {
                     </Pressable>
 
                     <Pressable
-                      onPress={() => handleMatch(item._id)}
-                      style={{
+ onPress={() => handleMatch(item._id)}                      
+ style={{
                         width: 50,
                         height: 50,
                         borderRadius: 25,
