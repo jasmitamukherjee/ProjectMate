@@ -19,7 +19,7 @@ const register = () => {
       password: password,
     };
  
-    axios.post("http://10.24.68.215:5000/register", user)
+    axios.post("http://192.168.1.3:5000/register", user)
   .then((response) => {
     console.log(response);
     Alert.alert('Registration successful', 'You have been registered successfully');
@@ -196,7 +196,7 @@ const register = () => {
             <Text style={{ fontFamily:"monospace",color: "gray", fontWeight: "bold" }}>Forgot password</Text>
 
           </View> */}
-          <View style={{marginTop:50,alignItems:'center'}}>
+          <View style={{marginTop:30,alignItems:'center'}}>
           <Pressable 
           onPress={handleRegister}
             style={{
