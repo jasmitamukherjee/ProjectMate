@@ -8,10 +8,12 @@ const app = express();
 const port = 5000;
 const cors = require("cors");
 
-// const http = require("http").createServer(app);
-// const io = require("socket.io")(http);
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
 
-app.use(cors());
+app.use(cors({
+  origin: '*'
+}));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -403,19 +405,23 @@ app.post("/create-match", async (req, res) => {
   try {
     const { currentUserId, selectedUserId } = req.body;
 
-    //update the selected user's interested array and the matches array
+    //update the selected user's crushes array and the matches array
     await User.findByIdAndUpdate(selectedUserId, {
-      $push: { matches: currentUserId },
+      // push: { matches: currentUserId },
+      $addToSet: { matches: currentUserId }, // Use addToSet to avoid duplicate matches
+
       $pull: { interested: currentUserId },
     });
 
     //update the current user's matches array recievedlikes array
     await User.findByIdAndUpdate(currentUserId, {
-      $push: { matches: selectedUserId },
+      // push: { matches: selectedUserId },
+      $addToSet: { matches: selectedUserId },
+
       $pull: { recievedLikes: selectedUserId },
     });
 
-    res.sendStatus(200).json({message:"match made !!"});
+    res.sendStatus(200);
   } catch (error) {
     res.status(500).json({ message: "Error creating a match", error });
   }
@@ -441,3 +447,72 @@ app.get("/users/:userId/matches", async (req, res) => {
     res.status(500).json({ message: "Error retrieving the matches", error });
   }
 });
+
+io.on("connection", (socket) => {
+  console.log("a user is connected");
+
+  socket.on("sendMessage", async (data) => {
+    try {
+      const { senderId, receiverId, message } = data;
+
+      console.log("data", data);
+
+      const newMessage = new Chat({ senderId, receiverId, message });
+      await newMessage.save();
+
+      //emit the message to the receiver
+      io.to(receiverId).emit("receiveMessage", newMessage);
+    } catch (error) {
+      console.log("Error handling the messages");
+    }
+    socket.on("disconnet", () => {
+      console.log("user disconnected");
+    });
+  });
+});
+
+
+http.listen(8000, () => {
+  console.log("Socket.IO server running on port 8000");
+});
+
+//endpoint to get mesgs from backend 
+app.get("/messages", async (req, res) => {
+  try {
+    const { senderId, receiverId } = req.query;
+
+    // console.log(senderId);
+    // console.log(receiverId);
+
+    const messages = await Chat.find({
+      $or: [
+        { senderId: senderId, receiverId: receiverId },
+        { senderId: receiverId, receiverId: senderId },
+      ],
+    }).populate("senderId", "_id name");
+
+    res.status(200).json(messages);
+  } catch (error) {
+    res.status(500).json({ message: "Error in getting messages", error });
+  }
+});
+
+//endpoint to delete the messages;
+
+app.post("/delete",async(req,res) => {
+  try{
+      const {messages} = req.body;
+
+      if(!Array.isArray(messages) || messages.length == 0){
+          return res.status(400).json({message:"Invalid request body"})
+      };
+
+      for(const messageId of messages){
+          await Chat.findByIdAndDelete(messageId);
+      }
+
+      res.status(200).json({message:"Messages deleted successfully!"})
+  } catch(error){
+      res.status(500).json({message:"Internal server error",error})
+  }
+})
