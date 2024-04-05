@@ -13,7 +13,7 @@ const Profile = ({ item, isEven, userId, setProfiles }) => {
     try {
 
       setLiked(true);
-      await axios.post("http://10.24.68.215:5000/send-like", {
+      await axios.post("http://192.168.1.3:5000/send-like", {
         currentUserId: userId,
         selectedUserId: selectedUserId,
       });
@@ -34,7 +34,7 @@ const Profile = ({ item, isEven, userId, setProfiles }) => {
     try {
 
       setSelected(true);
-      await axios.post("http://10.24.68.215:5000/send-like", {
+      await axios.post("http://192.168.1.3:5000/send-like", {
         currentUserId: userId,
         selectedUserId: selectedUserId,
       });
@@ -71,7 +71,7 @@ const Profile = ({ item, isEven, userId, setProfiles }) => {
 
             </View>
             {item?.projectImages?.slice(0,1).map((item,index) => (
-              <Image  style={{
+              <Image key={index} style={{
                 width: 280,
                 height: 280,
                 resizeMode: "cover",
@@ -158,7 +158,7 @@ const Profile = ({ item, isEven, userId, setProfiles }) => {
           <View style={{ flexDirection: "row", alignItems: "center"}}>
             
             {item?.projectImages?.slice(0,1).map((item,index) => (
-              <Image  style={{
+              <Image key={index} style={{
                 width: 280,
                 height: 280,
                 resizeMode: "cover",
