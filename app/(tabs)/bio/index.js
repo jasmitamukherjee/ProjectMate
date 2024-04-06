@@ -248,7 +248,7 @@ const handleOption= (lookingFor)=>{
 const addLookingFor= async (lookingFor)=>{
   try {
     const response = await axios.put(
-      `http://192.168.1.3:5000/users/${userId}/looking-for`,
+      `http://192.168.1.5:5000/users/${userId}/looking-for`,
       {
         lookingFor: lookingFor,
       }
@@ -269,7 +269,7 @@ const addLookingFor= async (lookingFor)=>{
 const removeLookingFor = async (lookingFor) => {
   try {
     const response = await axios.put(
-      `http://192.168.1.3:5000/users/${userId}/looking-for/remove`,
+      `http://192.168.1.5:5000/users/${userId}/looking-for/remove`,
       {
         lookingFor: lookingFor,
       }
@@ -289,7 +289,7 @@ const removeLookingFor = async (lookingFor) => {
 const addKeywords= async (keywords)=>{
   try {
     const response = await axios.put(
-      `http://192.168.1.3:5000/users/${userId}/keywords/add`,
+      `http://192.168.1.5:5000/users/${userId}/keywords/add`,
       {
         keywords: keywords,
       }
@@ -309,7 +309,7 @@ const addKeywords= async (keywords)=>{
 const removeKeywords = async (keywords)=>{
 try {
   const response = await axios.put(
-    `http://192.168.1.3:5000/users/${userId}/keywords/remove`,
+    `http://192.168.1.5:5000/users/${userId}/keywords/remove`,
     {
       keywords: keywords,
     }
@@ -354,7 +354,7 @@ try {
 
   },[])
   const fetchUserDescription= async ()=>{
-    try { const response = await axios.get(`http://192.168.1.3:5000/users/${userId}`);
+    try { const response = await axios.get(`http://192.168.1.5:5000/users/${userId}`);
     console.log(response);
     const user = response.data;
 
@@ -379,7 +379,7 @@ try {
   const updateUserDescripton= async ()=>{
     try {
       const response = await axios.put(
-        `http://192.168.1.3:5000/users/${userId}/description`,
+        `http://192.168.1.5:5000/users/${userId}/description`,
         {
           description: description,
         }
@@ -400,7 +400,7 @@ try {
   const handleAddImage= async ()=>{
  
       try{
-        const response = await axios.post(`http://192.168.1.3:5000/users/${userId}/project-images`,{
+        const response = await axios.post(`http://192.168.1.5:5000/users/${userId}/project-images`,{
             imageUrl:imageUrl
         });
 

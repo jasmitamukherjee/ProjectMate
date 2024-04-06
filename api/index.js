@@ -502,8 +502,9 @@ app.get("/messages", async (req, res) => {
 app.post("/delete",async(req,res) => {
   try{
       const {messages} = req.body;
+      console.log(req.body)
 
-      if(!Array.isArray(messages) || messages.length == 0){
+      if( !messages ||  messages.length == 0){
           return res.status(400).json({message:"Invalid request body"})
       };
 

@@ -12,7 +12,7 @@ const select = () => {
     const userId = params?.userId
     // const handleMatch = async (selectedUserId) => {
     //     try {
-    //       await axios.post("http://192.168.1.3:5000/create-match", {
+    //       await axios.post("http://192.168.1.5:5000/create-match", {
     //         currentUserId: userId,
     //         selectedUserId: selectedUserId,
     //       });
@@ -29,7 +29,7 @@ const select = () => {
       // console.log("user id",userId)
      
       try {
-        await axios.post("http://192.168.1.3:5000/create-match", {
+        await axios.post("http://192.168.1.5:5000/create-match", {
           currentUserId: userId,
           selectedUserId: selectedUserId,
         });

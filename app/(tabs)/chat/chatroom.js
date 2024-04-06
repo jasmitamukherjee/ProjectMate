@@ -14,6 +14,10 @@ import {
   import { useLocalSearchParams } from "expo-router";
   import { Entypo, Feather } from "@expo/vector-icons";
   import { MaterialCommunityIcons } from "@expo/vector-icons";
+  import { MaterialIcons } from "@expo/vector-icons";
+
+  import { FontAwesome } from "@expo/vector-icons";
+
   import { io } from "socket.io-client";
   import axios from "axios";
   
@@ -22,7 +26,9 @@ import {
     const [message, setMessage] = useState("");
     const params = useLocalSearchParams();
     const [messages, setMessages] = useState([]);
-    const socket = io("http://192.168.1.3:8000");
+    const [selectedMessages, setSelectedMessages] = useState([]);
+
+    const socket = io("http://192.168.1.5:8000");
     socket.on("connect", () => {
       console.log("Connected to the Socket.IO server");
     });
@@ -44,13 +50,31 @@ import {
           fetchMessages();
       },200)
     };
+
     useLayoutEffect(() => {
       navigation.setOptions({
         headerTitle: "",
         headerLeft: () => (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Ionicons name="arrow-back" size={24} color="black" />
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            {selectedMessages.length > 0 ? (
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <Text style={{ fontSize: 16, fontWeight: "500",fontFamily:"monospace" }}>
+                  {selectedMessages.length}
+                </Text>
+                {/* <Ionicons name="md-arrow-redo-sharp" size={24} color="black" />
+          <Ionicons name="md-arrow-undo" size={24} color="black" />
+          <FontAwesome name="star" size={24} color="black" /> */}
+          <MaterialIcons
+            onPress={() => deleteMessages(selectedMessages)}
+            name="delete"
+            size={24}
+            color="black"
+          />
+              </View>
+              
+            ):(
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
               <Image
                 style={{
                   width: 30,
@@ -64,27 +88,58 @@ import {
                 {params?.name}
               </Text>
             </View>
+            )}
+          
           </View>
         ),
-        headerRight: () => (
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <MaterialCommunityIcons
-              name="dots-vertical"
-              size={24}
-              color="black"
-            />
-            <Ionicons name="videocam-outline" size={24} color="black" />
-          </View>
-        ),
+        headerRight: () => 
+        {selectedMessages.length > 0 ? (
+          <View >
+          
+        </View>
+
+        ):
+          (
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <MaterialCommunityIcons
+                name="dots-vertical"
+                size={24}
+                color="black"
+              />
+              <Ionicons name="videocam-outline" size={24} color="black" />
+            </View>
+          )}
+      
       });
-    }, []);
+    }, [navigation, params, selectedMessages]);
+
+    const deleteMessages = async (messageIds) => {
+      console.log("trying to delete")
+      try {
+        const response = await axios.post("http://192.168.1.5:5000/delete", {
+          messages: messageIds, // Send selectedMessages array as messages
+        });
+        if (response.status === 200) {
+          setSelectedMessages((prevSelectedMessages) =>
+          prevSelectedMessages.filter((id) => !messageIds.includes(id))
+        );
+  // setSelectedMessages([])
+          fetchMessages();
+        }
+        //  else {
+        //   console.log("response not ok", response.status);
+        // }
+      } catch (error) {
+        console.log("error deleting messages", error);
+      }
+    };
     const fetchMessages = async () => {
       try {
         const senderId = params?.senderId;
         const receiverId = params?.receiverId;
         console.log("sender id",senderId)
         console.log("recieevr id",receiverId)
-        const response = await axios.get("http://192.168.1.3:5000/messages", {
+        const response = await axios.get("http://192.168.1.5:5000/messages", {
           params: { senderId, receiverId },
         });
   
@@ -96,17 +151,37 @@ import {
     useEffect(() => {
       fetchMessages();
     }, []);
+
+    const handleSelectMessage = (message) => {
+      console.log("long press")
+      //check if the message is already selected
+      const isSelected = selectedMessages.includes(message._id);
+  
+      if (isSelected) {
+        setSelectedMessages((previousMessages) =>
+          previousMessages.filter((id) => id !== message._id)
+        );
+      } else {
+        setSelectedMessages((previousMessages) => [
+          ...previousMessages,
+          message._id,
+        ]);
+      }
+    };
     //to b commented
-    console.log("messages",messages)
+    console.log("messages",selectedMessages)
     const formatTime = (time) => {
       const options = { hour: "numeric", minute: "numeric" };
       return new Date(time).toLocaleString("en-US", options);
     };
+
     return (
       <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "white" }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           {messages?.map((item, index) => (
             <Pressable
+            onLongPress={() => handleSelectMessage(item)}
+
               style={[
                 item?.senderId === params?.senderId
                   ? {
@@ -126,6 +201,10 @@ import {
                       borderRadius: 7,
                       maxWidth: "60%",
                     },
+                    // isSelected && { width: "100%", backgroundColor: "#F0FFFF" }
+                    selectedMessages.includes(item._id) && { width: "100%", backgroundColor: "#dcdcdc" }
+
+
               ]}
             >
               <Text style={{ fontSize: 13, textAlign: "left", color: "white",fontWeight:"500" ,fontFamily:"monospace"}}>
