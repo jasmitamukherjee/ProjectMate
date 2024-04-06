@@ -8,7 +8,7 @@ export default function Layout(){
             <Tabs.Screen
         name="profile"
         options={{
-          title: "Profiles",
+          title: "",
           headerShown: false,
           tabBarIcon: ({ focused }) =>
             focused ? (
@@ -21,7 +21,7 @@ export default function Layout(){
        <Tabs.Screen
         name="chat"
         options={{
-          title: "Chat",
+          title: "",
           headerShown: false,
           tabBarIcon: ({ focused }) =>
             focused ? (
@@ -43,7 +43,7 @@ export default function Layout(){
 <Tabs.Screen
         name="bio"
         options={{
-          title: "Account",
+          title: "",
           headerShown: false,
           tabBarIcon: ({ focused }) =>
             focused ? (

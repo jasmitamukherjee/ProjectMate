@@ -16,7 +16,6 @@ import {
   import { MaterialCommunityIcons } from "@expo/vector-icons";
   import { MaterialIcons } from "@expo/vector-icons";
 
-  import { FontAwesome } from "@expo/vector-icons";
 
   import { io } from "socket.io-client";
   import axios from "axios";
