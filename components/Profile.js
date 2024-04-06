@@ -13,7 +13,7 @@ const Profile = ({ item, isEven, userId, setProfiles }) => {
     try {
 
       setLiked(true);
-      await axios.post("http://192.168.1.5:5000/send-like", {
+      await axios.post("http://192.168.1.3:5000/send-like", {
         currentUserId: userId,
         selectedUserId: selectedUserId,
       });
@@ -34,7 +34,7 @@ const Profile = ({ item, isEven, userId, setProfiles }) => {
     try {
 
       setSelected(true);
-      await axios.post("http://192.168.1.5:5000/send-like", {
+      await axios.post("http://192.168.1.3:5000/send-like", {
         currentUserId: userId,
         selectedUserId: selectedUserId,
       });

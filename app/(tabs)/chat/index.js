@@ -29,7 +29,7 @@ const index = () => {
   const fetchReceivedLikesDetails= async ()=>{
     try {
       const response = await axios.get(
-        `http://192.168.1.5:5000/received-likes/${userId}/details`
+        `http://192.168.1.3:5000/received-likes/${userId}/details`
       );
 
       console.log(response);
@@ -44,7 +44,7 @@ const index = () => {
   const fetchUserMatches = async ()=>{
     try {
       const response = await axios.get(
-        `http://192.168.1.5:5000/users/${userId}/matches`
+        `http://192.168.1.3:5000/users/${userId}/matches`
       );
 
       const userMatches = response.data.matches;
