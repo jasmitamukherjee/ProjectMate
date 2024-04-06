@@ -16,7 +16,11 @@ import { AntDesign } from '@expo/vector-icons';
 import Carousel from 'react-native-snap-carousel';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router'
+
 const index = () => {
+  //TODO 
+  const router=useRouter()
   const [option, setOption] = useState("Description");
   const [description, setDescription] = useState("");
   const [activeSlide, setActiveSlide] = React.useState(0);
@@ -248,7 +252,7 @@ const handleOption= (lookingFor)=>{
 const addLookingFor= async (lookingFor)=>{
   try {
     const response = await axios.put(
-      `http://192.168.1.5:5000/users/${userId}/looking-for`,
+      `http://192.168.1.3:5000/users/${userId}/looking-for`,
       {
         lookingFor: lookingFor,
       }
@@ -269,7 +273,7 @@ const addLookingFor= async (lookingFor)=>{
 const removeLookingFor = async (lookingFor) => {
   try {
     const response = await axios.put(
-      `http://192.168.1.5:5000/users/${userId}/looking-for/remove`,
+      `http://192.168.1.3:5000/users/${userId}/looking-for/remove`,
       {
         lookingFor: lookingFor,
       }
@@ -289,7 +293,7 @@ const removeLookingFor = async (lookingFor) => {
 const addKeywords= async (keywords)=>{
   try {
     const response = await axios.put(
-      `http://192.168.1.5:5000/users/${userId}/keywords/add`,
+      `http://192.168.1.3:5000/users/${userId}/keywords/add`,
       {
         keywords: keywords,
       }
@@ -309,7 +313,7 @@ const addKeywords= async (keywords)=>{
 const removeKeywords = async (keywords)=>{
 try {
   const response = await axios.put(
-    `http://192.168.1.5:5000/users/${userId}/keywords/remove`,
+    `http://192.168.1.3:5000/users/${userId}/keywords/remove`,
     {
       keywords: keywords,
     }
@@ -354,7 +358,7 @@ try {
 
   },[])
   const fetchUserDescription= async ()=>{
-    try { const response = await axios.get(`http://192.168.1.5:5000/users/${userId}`);
+    try { const response = await axios.get(`http://192.168.1.3:5000/users/${userId}`);
     console.log(response);
     const user = response.data;
 
@@ -379,7 +383,7 @@ try {
   const updateUserDescripton= async ()=>{
     try {
       const response = await axios.put(
-        `http://192.168.1.5:5000/users/${userId}/description`,
+        `http://192.168.1.3:5000/users/${userId}/description`,
         {
           description: description,
         }
@@ -400,7 +404,7 @@ try {
   const handleAddImage= async ()=>{
  
       try{
-        const response = await axios.post(`http://192.168.1.5:5000/users/${userId}/project-images`,{
+        const response = await axios.post(`http://192.168.1.3:5000/users/${userId}/project-images`,{
             imageUrl:imageUrl
         });
 
@@ -418,6 +422,18 @@ try {
     return images[randomIndex]
 }
 const randomImage = getRandomImage()
+//added logout
+const handleLogout= async ()=>{
+  try {
+    console.log("inside try");
+    await AsyncStorage.removeItem("auth")
+    router.push("/(authenticate)/login")
+    
+  } catch (error) {
+    console.log("Error",error)
+    
+  }
+}
   return (
     <ScrollView>
       <View style={{height: "auto"}}>
@@ -509,6 +525,7 @@ const randomImage = getRandomImage()
 
       <View style={{ marginHorizontal: 14, marginVertical: 15 }}>
         {option == "Description" && (
+          <>
           <View  style={{
             marginTop:30,
             borderColor: "#202020",
@@ -544,6 +561,31 @@ const randomImage = getRandomImage()
                 <MaterialIcons name="computer" size={24} color="white" />
               </Pressable>
           </View>
+<View style={{width:100,flex:1,justifyContent:"center",alignSelf:"center"}}>
+          <Pressable 
+          onPress={handleLogout}
+          style={{
+                marginTop: 50,
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 15,
+                backgroundColor: "#4c0a4f",
+                borderRadius: 5,
+                justifyContent: "center",
+                padding: 10,
+              }}>
+            <Text style={{
+                  color: "white",
+                  textAlign: "center",
+                  fontSize: 15,
+                  fontWeight: "500",
+                  fontFamily:"monospace"
+                }}>
+              Logout
+            </Text>
+          </Pressable>
+          </View>
+          </>
         )}
 
 
