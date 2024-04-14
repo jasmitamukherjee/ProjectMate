@@ -12,7 +12,7 @@ const select = () => {
     const userId = params?.userId
     // const handleMatch = async (selectedUserId) => {
     //     try {
-    //       await axios.post("http://192.168.1.3:5000/create-match", {
+    //       await axios.post("http://192.168.180.207:5000/create-match", {
     //         currentUserId: userId,
     //         selectedUserId: selectedUserId,
     //       });
@@ -29,7 +29,7 @@ const select = () => {
       // console.log("user id",userId)
      
       try {
-        await axios.post("http://192.168.1.3:5000/create-match", {
+        await axios.post("http://192.168.180.207:5000/create-match", {
           currentUserId: userId,
           selectedUserId: selectedUserId,
         });
@@ -153,7 +153,7 @@ const select = () => {
               </View>
 
               <View>
-                <Text>Keywords</Text>
+                <Text style={{fontFamily:"monospace"}}>Keywords</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
 
                 <View
@@ -191,7 +191,9 @@ const select = () => {
               </View>
 
               <View style={{ marginTop: 12 }}>
-                <Text>Looking For</Text>
+                <Text style={{fontFamily:"monospace"}}>Looking For</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+
                 <View
                   style={{
                     flexDirection: "row",
@@ -221,6 +223,7 @@ const select = () => {
                     </View>
                   ))}
                 </View>
+                </ScrollView>
               </View>
             </View>
           ))}

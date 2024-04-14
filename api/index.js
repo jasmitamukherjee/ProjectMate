@@ -1,9 +1,42 @@
+// const express = require("express");
+// const bodyParser = require("body-parser");
+// const mongoose = require("mongoose");
+// const crypto = require("crypto");
+
+// const nodemailer = require("nodemailer")
+// const app = express();
+// const port = 5000;
+// const cors = require("cors");
+
+// const http = require("http").createServer(app);
+// const io = require("socket.io")(http);
+
+// app.use(cors({
+//   origin: '*'
+// }));
+
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
+// const jwt = require("jsonwebtoken");
+// const User = require("./models/user");
+// const Chat = require("./models/message");
+
+
+
+// mongoose.connect("mongodb+srv://jasmitamukherjee4:jasmita@cluster0.xpvzw6u.mongodb.net/").then(()=>{
+//     console.log("Connected to MongDb")
+// }).catch((error)=>{
+// console.log("Error connecting to MongoDb")
+// })
+// app.listen(port, () => {
+//     console.log("Server is running on 5000");
+//   });
+
+
+//after dividing
+
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const crypto = require("crypto");
-
-const nodemailer = require("nodemailer")
 const app = express();
 const port = 5000;
 const cors = require("cors");
@@ -14,7 +47,7 @@ const io = require("socket.io")(http);
 app.use(cors({
   origin: '*'
 }));
-
+const { secretKey } = require("./db");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 const jwt = require("jsonwebtoken");
@@ -22,12 +55,8 @@ const User = require("./models/user");
 const Chat = require("./models/message");
 
 
-
-mongoose.connect("mongodb+srv://jasmitamukherjee4:jasmita@cluster0.xpvzw6u.mongodb.net/").then(()=>{
-    console.log("Connected to MongDb")
-}).catch((error)=>{
-console.log("Error connecting to MongoDb")
-})
+// MongoDB connection
+require("./db").connect();
 app.listen(port, () => {
     console.log("Server is running on 5000");
   });
@@ -52,9 +81,7 @@ app.post("/register",async(req,res)=>{
       .status(200)
       .json({ message: "User registered successfully", userId: newUser._id });
 
-        //send verification email to registered user
-        // sendVerificationEmail(newUser.email,newUser.verificationToken)
-
+       
         
     } catch (error) {
         console.log("Error registering user",error)
@@ -63,23 +90,20 @@ app.post("/register",async(req,res)=>{
     }
 })
 
-// const sendVerificationEmail= async (email,verificationToken)=>{
-//     const transpoter = nodemailer.createTransport({
-//         service: "gmail",
-//         auth: {
-//           user: "jasmitamukherjee6@gmail.com",
-//           pass: "rnzcugnscqtqiefs",
-//         },
-//       });
+
+
+
+
+// const generateSecretKey = ()=>{
+//     const secretKey = crypto.randomBytes(32).toString("hex");
+
+//   return secretKey;
 
 // }
-const generateSecretKey = ()=>{
-    const secretKey = crypto.randomBytes(32).toString("hex");
+// const secretKey = generateSecretKey();
 
-  return secretKey;
 
-}
-const secretKey = generateSecretKey();
+
 
 //login endpoint 
 app.post("/login", async (req, res) => {
@@ -475,6 +499,9 @@ io.on("connection", (socket) => {
 http.listen(8000, () => {
   console.log("Socket.IO server running on port 8000");
 });
+
+
+
 
 //endpoint to get mesgs from backend 
 app.get("/messages", async (req, res) => {

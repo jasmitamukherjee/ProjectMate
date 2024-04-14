@@ -19,7 +19,7 @@ const register = () => {
       password: password,
     };
  
-    axios.post("http://192.168.1.3:5000/register", user)
+    axios.post("http://192.168.180.207:5000/register", user)
   .then((response) => {
     console.log(response);
     Alert.alert('Registration successful', 'You have been registered successfully');
@@ -43,7 +43,7 @@ const register = () => {
         <View  style={{
             justifyContent: "center",
             alignItems: "center",
-            marginTop: 25,
+            marginTop: 5,
           }}>
           <Image style={{ width: 150, height: 80, resizeMode: "contain" }}
             source={{

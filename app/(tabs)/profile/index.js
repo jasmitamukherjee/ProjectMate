@@ -22,7 +22,7 @@ const index = () => {
 
   },[])
   const fetchUserDescription= async ()=>{
-    try { const response = await axios.get(`http://192.168.1.3:5000/users/${userId}`);
+    try { const response = await axios.get(`http://192.168.180.207:5000/users/${userId}`);
     console.log(response);
     const user = response.data;
 
@@ -40,7 +40,7 @@ const index = () => {
   }  
   const fetchPofiles =  async ()=>{
     try {
-      const response = await axios.get("http://192.168.1.3:5000/profiles", {
+      const response = await axios.get("http://192.168.180.207:5000/profiles", {
         params: {
           userId: userId,
           gender: user?.gender,
