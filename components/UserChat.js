@@ -22,7 +22,7 @@ const UserChat = ({item,userId}) => {
         try {
           const senderId = userId;
           const receiverId = item?._id;
-          const response = await axios.get("http://192.168.180.207:5000/messages", {
+          const response = await axios.get("http://192.168.1.5:5000/messages", {
             params: { senderId, receiverId },
           });
     

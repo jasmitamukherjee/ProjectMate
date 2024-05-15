@@ -32,7 +32,7 @@ checkLoginStatus()
       password: password,
     };
 
-    axios.post("http://192.168.180.207:5000/login",user).then((response) => {
+    axios.post("http://192.168.1.5:5000/login",user).then((response) => {
         console.log(response);
         const token = response.data.token;
         AsyncStorage.setItem("auth",token);

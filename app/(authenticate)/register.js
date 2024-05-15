@@ -19,7 +19,7 @@ const register = () => {
       password: password,
     };
  
-    axios.post("http://192.168.180.207:5000/register", user)
+    axios.post("http://192.168.1.5:5000/register", user)
   .then((response) => {
     console.log(response);
     Alert.alert('Registration successful', 'You have been registered successfully');

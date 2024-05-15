@@ -1,26 +1,19 @@
-import { StyleSheet, Text, View, ScrollView,
-  Image,
-  Pressable,
-  TextInput,
-  Button,
-  FlatList,
-  Alert,
-  TouchableOpacity,
-  } from 'react-native'
-  import "core-js/stable/atob";
-import {jwtDecode} from "jwt-decode";
-import React, { useEffect, useState } from 'react'
+
+
+import { StyleSheet, Text, View,Image,ScrollView ,Pressable,TextInput,FlatList,TouchableOpacity,Alert} from 'react-native'
+import React, { useState ,useEffect} from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import "core-js/stable/atob";
+import {jwtDecode} from "jwt-decode";
+import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import Carousel from 'react-native-snap-carousel';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router'
 
 const index = () => {
-  //TODO 
   const router=useRouter()
+
   const [option, setOption] = useState("Description");
   const [description, setDescription] = useState("");
   const [activeSlide, setActiveSlide] = React.useState(0);
@@ -31,22 +24,7 @@ const index = () => {
   const [images,setImages] = useState([])
   const [name,setName] = useState("")
   const [gender,setGender] = useState("")
-console.log("User id",userId)
 
-  const profileImages = [
-    {
-      image:
-        "https://images.pexels.com/photos/1042140/pexels-photo-1042140.jpeg?auto=compress&cs=tinysrgb&w=800",
-    },
-    {
-      image:
-        "https://images.pexels.com/photos/1215695/pexels-photo-1215695.jpeg?auto=compress&cs=tinysrgb&w=800",
-    },
-    {
-      image:
-        "https://images.pexels.com/photos/7580971/pexels-photo-7580971.jpeg?auto=compress&cs=tinysrgb&w=800",
-    },
-  ];
   const keywords = [
     {
       id: "0",
@@ -163,189 +141,6 @@ console.log("User id",userId)
     },
   ];
 
-  const profiles = [
-    {
-      id: "0",
-      name: "Shreya Rao",
-      description:
-        "Shreya's project is a marketplace connecting local artisans with customers seeking unique handmade products. Using a swipe-based interface, users can discover handcrafted items ranging from jewelry to home decor. Developed with React JS, JavaScript, HTML, CSS, React Native, and React Native CLI.",
-      projectImages: [
-        {
-          id: "0",
-          image:
-            "https://images.pexels.com/photos/3236651/pexels-photo-3236651.jpeg?auto=compress&cs=tinysrgb&w=800",
-        },
-      ],
-    },
-    {
-      id: "1",
-      name: "Aditi K",
-      description:
-        "Aditi's project is an online platform connecting pet owners with reliable pet sitters and dog walkers in their area. Utilizing a swipe-based interface, users can browse through profiles, read reviews, and book pet care services with ease. Built using React JS, JavaScript, HTML, CSS, React Native, and React Native CLI.",
-      projectImages: [
-        {
-          id: "0",
-          image:
-            "https://images.pexels.com/photos/1485031/pexels-photo-1485031.jpeg?auto=compress&cs=tinysrgb&w=800",
-        },
-      ],
-    },
-    {
-      id: "10",
-      name: "Rheaa Thakur",
-      description:
-        "Rheaa's project is a virtual fitness platform that connects users with personal trainers for customized workout sessions. Featuring a swipe-based interface, users can find fitness instructors, schedule sessions, and track their progress seamlessly. Developed with React JS, JavaScript, HTML, CSS, React Native, and React Native CLI.",
-      projectImages: [
-        {
-          id: "0",
-          image:
-            "https://images.pexels.com/photos/1844012/pexels-photo-1844012.jpeg?auto=compress&cs=tinysrgb&w=800",
-        },
-      ],
-    },
-    {
-      id: "3",
-      name: "Manisha Singha",
-      description:
-        "Manisha's project is a language exchange platform connecting language learners with native speakers worldwide. Through a swipe-based interface, users can find language partners, engage in conversations, and improve their language skills together. Crafted with React JS, JavaScript, HTML, CSS, React Native, and React Native CLI.",
-      projectImages: [
-        {
-          id: "0",
-          image:
-            "https://images.pexels.com/photos/1642228/pexels-photo-1642228.jpeg?auto=compress&cs=tinysrgb&w=800",
-        },
-      ],
-    },
-    {
-      id: "4",
-      name: "Nisha J",
-      description:
-        "Nisha's project is a volunteering platform connecting individuals with local nonprofit organizations and community projects. Using a swipe-based interface, users can discover volunteer opportunities, sign up for events, and make a positive impact in their community. Engineered with React JS, JavaScript, HTML, CSS, React Native, and React Native CLI.",
-      projectImages: [
-        {
-          id: "0",
-          image:
-            "https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&w=800",
-        },
-      ],
-    },
-  ];
-  
-
-const handleToggleKeywords= (keywords) =>{
-  // console.log("keywords",keywords)
-  if(selectedKeywords.includes(keywords)){
-    removeKeywords(keywords)
-  }else{
-    addKeywords(keywords)
-  }
-
-}
-const handleOption= (lookingFor)=>{
-  if(lookingOptions.includes(lookingFor)){
-    removeLookingFor(lookingFor)
-  }
-  else{
-    addLookingFor(lookingFor)
-  }
-}
-const addLookingFor= async (lookingFor)=>{
-  try {
-    const response = await axios.put(
-      `http://192.168.180.207:5000/users/${userId}/looking-for`,
-      {
-        lookingFor: lookingFor,
-      }
-    );
-
-    console.log(response.data);
-
-    if (response.status == 200) {
-      setLookingOptions([...lookingOptions, lookingFor]);
-    }
-
-    
-  } catch (error) {
-    console.log("Error adding looking for",error)
-  }
-}
-
-const removeLookingFor = async (lookingFor) => {
-  try {
-    const response = await axios.put(
-      `http://192.168.180.207:5000/users/${userId}/looking-for/remove`,
-      {
-        lookingFor: lookingFor,
-      }
-    );
-
-    console.log(response.data); // Log the response for confirmation
-
-    // Handle success or update your app state accordingly
-    if (response.status === 200) {
-      setLookingOptions(lookingOptions.filter((item) => item !== lookingFor));
-    }
-  } catch (error) {
-    console.error("Error removing looking for:", error);
-    // Handle error scenarios
-  }
-};
-const addKeywords= async (keywords)=>{
-  try {
-    const response = await axios.put(
-      `http://192.168.180.207:5000/users/${userId}/keywords/add`,
-      {
-        keywords: keywords,
-      }
-    );
-
-    console.log(response.data);
-
-    if (response.status == 200) {
-      setSelectedKeywords([...selectedKeywords, keywords]);
-    }
-    
-  } catch (error) {
-    console.log("Error adding keywords",error)
-    
-  }
-}
-const removeKeywords = async (keywords)=>{
-try {
-  const response = await axios.put(
-    `http://192.168.180.207:5000/users/${userId}/keywords/remove`,
-    {
-      keywords: keywords,
-    }
-  );
-
-  console.log(response.data);
-
-  if (response.status == 200) {
-    setSelectedKeywords(selectedKeywords.filter((item) => item !== keywords));
-  }
-  
-} catch (error) {
-  console.log("Error removing keywords",error)
-  
-}
-}
-
-  const renderImageCarousel = ({item}) =>{
-    return(
-    <View  style={{ width: "100%", justifyContent: "center", alignItems: "center" }}>
-      <Image  style={{
-          width: "85%",
-          resizeMode: "cover",
-          height: 290,
-          borderRadius: 10,
-          transform: [{ rotate: "-5deg" }],
-        }} source={{uri:item}}/>
-        <Text style={{fontFamily:"monospace",position:"absolute",top:10,right:10}}>{activeSlide + 1}/{images.length}</Text>
-    </View>
-  )}
-
-
   useEffect(()=>{
     const fetchUser= async ()=>{
       const token = await AsyncStorage.getItem("auth");
@@ -358,7 +153,7 @@ try {
 
   },[])
   const fetchUserDescription= async ()=>{
-    try { const response = await axios.get(`http://192.168.180.207:5000/users/${userId}`);
+    try { const response = await axios.get(`http://192.168.1.5:5000/users/${userId}`);
     console.log(response);
     const user = response.data;
 
@@ -380,10 +175,11 @@ try {
     }
 
   },[userId])
+
   const updateUserDescripton= async ()=>{
     try {
       const response = await axios.put(
-        `http://192.168.180.207:5000/users/${userId}/description`,
+        `http://192.168.1.5:5000/users/${userId}/description`,
         {
           description: description,
         }
@@ -400,29 +196,7 @@ try {
       
     }
   }
-  // console.log("desc",description)
-  const handleAddImage= async ()=>{
- 
-      try{
-        const response = await axios.post(`http://192.168.180.207:5000/users/${userId}/project-images`,{
-            imageUrl:imageUrl
-        });
-
-        console.log(response);
-
-        setImageUrl("");
-      
-    } catch (error) {
-      console.log("Error posting image",error)
-      
-    }
-  }
-  const getRandomImage = () => {
-    const randomIndex = Math.floor(Math.random() * images.length);
-    return images[randomIndex]
-}
-const randomImage = getRandomImage()
-//added logout
+  //added logout
 const handleLogout= async ()=>{
   try {
     console.log("inside try");
@@ -434,70 +208,191 @@ const handleLogout= async ()=>{
     
   }
 }
+
+const handleToggleKeywords= (keywords) =>{
+  // console.log("keywords",keywords)
+  if(selectedKeywords.includes(keywords)){
+    removeKeywords(keywords)
+  }else{
+    addKeywords(keywords)
+  }
+
+}
+const handleOption= (lookingFor)=>{
+  if(lookingOptions.includes(lookingFor)){
+    removeLookingFor(lookingFor)
+  }
+  else{
+    addLookingFor(lookingFor)
+  }
+}
+const addLookingFor= async (lookingFor)=>{
+  try {
+    const response = await axios.put(
+      `http://192.168.1.5:5000/users/${userId}/looking-for`,
+      {
+        lookingFor: lookingFor,
+      }
+    );
+
+    console.log(response.data);
+
+    if (response.status == 200) {
+      setLookingOptions([...lookingOptions, lookingFor]);
+    }
+
+    
+  } catch (error) {
+    console.log("Error adding looking for",error)
+  }
+}
+
+const removeLookingFor = async (lookingFor) => {
+  try {
+    const response = await axios.put(
+      `http://192.168.1.5:5000/users/${userId}/looking-for/remove`,
+      {
+        lookingFor: lookingFor,
+      }
+    );
+
+    console.log(response.data); // Log the response for confirmation
+
+    // Handle success or update your app state accordingly
+    if (response.status === 200) {
+      setLookingOptions(lookingOptions.filter((item) => item !== lookingFor));
+    }
+  } catch (error) {
+    console.error("Error removing looking for:", error);
+    // Handle error scenarios
+  }
+};
+const addKeywords= async (keywords)=>{
+  try {
+    const response = await axios.put(
+      `http://192.168.1.5:5000/users/${userId}/keywords/add`,
+      {
+        keywords: keywords,
+      }
+    );
+
+    console.log(response.data);
+
+    if (response.status == 200) {
+      setSelectedKeywords([...selectedKeywords, keywords]);
+    }
+    
+  } catch (error) {
+    console.log("Error adding keywords",error)
+    
+  }
+}
+const removeKeywords = async (keywords)=>{
+try {
+  const response = await axios.put(
+    `http://192.168.1.5:5000/users/${userId}/keywords/remove`,
+    {
+      keywords: keywords,
+    }
+  );
+
+  console.log(response.data);
+
+  if (response.status == 200) {
+    setSelectedKeywords(selectedKeywords.filter((item) => item !== keywords));
+  }
+  
+} catch (error) {
+  console.log("Error removing keywords",error)
+  
+}
+}
+const getRandomImage = () => {
+  const randomIndex = Math.floor(Math.random() * images.length);
+  return images[randomIndex]
+}
+const randomImage = getRandomImage()
+const handleAddImage= async ()=>{
+ 
+  try{
+    const response = await axios.post(`http://192.168.1.5:5000/users/${userId}/project-images`,{
+        imageUrl:imageUrl,
+        // userId: userId
+    });
+
+    console.log(response);
+
+    setImageUrl("");
+  
+} catch (error) {
+  console.log("Error posting image",error)
+  
+}
+}
+const renderImageItem = ({ item }) => (
+  <Image source={{ uri: item }} style={styles.image} />
+);
+
   return (
-    <ScrollView>
-      <View style={{height: "auto"}}>
-      {/* <Image
-          style={{borderBottomLeftRadius:160,borderBottomRightRadius:160,width: "100%", height: 200, resizeMode: "cover" }}
+   <ScrollView>
+    <View>
+      {/* <Image   style={{ width: "100%", height: 200, resizeMode: "cover" }}
           source={{
-            uri: "https://wallpapers.com/images/featured/plain-background-0aqx3e65vih1xev1.jpg",
-          }}
-        /> */}
-        <View>
+            uri: "https://htmlcolorcodes.com/assets/images/colors/light-violet-color-solid-background-1920x1080.png",
+          }}/> */}
           <View>
-            <Pressable style={{
-                padding: 10,
-                backgroundColor: "#c6a5d1",
-                width: 300,
-                marginLeft: "auto",
-                marginRight: "auto",
-                marginTop:50,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 50,
-                // position: "absolute",
-                // top: -60,
-                // left: "50%",
-                // transform: [{ translateX: -150 },{translateY: -20}],
-               
-              }} >
-            <Image
-                style={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: 30,
-                  resizeMode: "cover",
-                }}
+            <View>
+              <Pressable  style={{
+                 padding: 10,
+                 backgroundColor: "#c6a5d1",
+                 width: 300,
+                 marginLeft: "auto",
+                 marginRight: "auto",
+                 marginTop:50,
+                 justifyContent: "center",
+                 alignItems: "center",
+                 borderRadius: 50,
+                 // position: "absolute",
+                 // top: -60,
+                 // left: "50%",
+                 // transform: [{ translateX: -150 },{translateY: -20}],
+                
+              }}>
+                <Image  
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 30,
+                    resizeMode: "cover",
+                  }}
                 source={{
-                    uri:randomImage,
-                }}
-              />
-               <Text style={{fontFamily:"monospace",fontWeight:"bold",fontSize:18,marginTop:6}}>{name}</Text>
-            <Text  style={{fontFamily:"monospace",fontSize:15,marginTop:4,fontWeight:"700"}}>{gender}</Text>
-              
-            </Pressable>
-           
+                  uri: randomImage,
+              }}/>
+
+<Text style={{fontFamily:"monospace",fontWeight:"bold",fontSize:18,marginTop:6}}>{name}</Text>
+
+              </Pressable>
+            
+            </View>
           </View>
-        </View>
-      </View>
-      <View  style={{
+    </View>
+    <View style={{
           marginTop: 30,
           marginHorizontal: 20,
           flexDirection: "row",
           alignItems: "center",
           gap: 10,
           
-          justifyContent: "center",
-        }}>
-        <Pressable onPress={()=>setOption("Description")}>
-          <Text  style={{
+          justifyContent: "center"}}>
+      <Pressable onPress={()=>setOption("Description")}>
+        <Text  style={{
               fontSize: 13,
               fontWeight: "bold",
               fontFamily:"monospace",
               color: option == "Description" ? "black" : "gray",
             }}>Description</Text>
-        </Pressable>
-        <Pressable  onPress={()=>setOption("Photos")}>
+      </Pressable>
+      <Pressable  onPress={()=>setOption("Photos")}>
           <Text  style={{
               fontSize: 13,
               fontWeight: "bold",
@@ -521,9 +416,9 @@ const handleLogout= async ()=>{
               color: option == "Looking For" ? "black" : "gray",
             }}>Looking For</Text>
         </Pressable>
-      </View >
+    </View>
 
-      <View style={{ marginHorizontal: 14, marginVertical: 15 }}>
+    <View style={{ marginHorizontal: 14, marginVertical: 15 }}>
         {option == "Description" && (
           <>
           <View  style={{
@@ -539,7 +434,7 @@ const handleLogout= async ()=>{
              
                 fontFamily: "monospace",
                 fontSize: description ? 15 : 15,
-              }} placeholder='Write the description of your project.'/>
+              }} placeholder='Write project description.'/>
               <Pressable 
               onPress={updateUserDescripton} style={{
                 marginTop: "auto",
@@ -591,41 +486,6 @@ const handleLogout= async ()=>{
 
       </View >
 
-      <View style={{ marginHorizontal: 14 }}>
-        { option == "Photos" && (
-          <View>
-            <Carousel data={images} renderItem={renderImageCarousel} sliderWidth={350} itemWidth={300} onSnapToItem={(index)=> setActiveSlide(index)}/>
-            <View style={{marginTop:25}}>
-              <Text style={{fontFamily:"monospace"}}>Add a picture of your project.</Text>
-              <View style={{flexDirection:"row",alignItems:"center",gap:5,paddingVertical:5,borderRadius:5,marginTop:10,backgroundColor:"#dcdcdc"}}>
-              <Ionicons style={{marginLeft:8,color:"gray"}} name="images" size={24} color="black" />
-              <TextInput value={imageUrl} onChangeText={(text)=>setImageUrl(text)} style={{fontFamily:"monospace",color:"gray",marginVertical:10,width:300}} placeholder='Enter your image url'/>
-              </View>
-              {/* <Button
-  title='Add image'
-  buttonStyle={{ marginTop: 5, backgroundColor: "#dcdcdc" }}
-  titleStyle={{ color: "#4c0a4f" }}
-/> */}
-<TouchableOpacity
-        style={{
-          marginTop: 5,
-          backgroundColor: '#dcdcdc',
-          padding: 10,
-          borderRadius: 5,
-          alignItems: 'center',
-        }}
-        onPress={
-          
-          handleAddImage
-        }>
-        <Text style={{ color: '#4c0a4f',fontWeight:"bold" ,fontFamily:"monospace",fontSize:15}}>Add image</Text>
-      </TouchableOpacity>
-
-            </View>
-
-          </View>
-        )}
-      </View>
 
       <View  style={{ marginHorizontal: 14 }}>
   {option === "Keywords" && (
@@ -658,49 +518,97 @@ const handleLogout= async ()=>{
     </View>
   )}
 </View>
-<View style={{ marginHorizontal: 14}}>
+<View style={{ marginHorizontal: 14 }}>
   {option === "Looking For" && (
-    
     <FlatList
-    columnWrapperStyle={{ justifyContent: "space-between" }}
+      columnWrapperStyle={{ justifyContent: "space-between" }}
       numColumns={2}
       data={data}
       renderItem={({ item }) => {
+        const isSelected = lookingOptions.includes(item?.name);
         return (
-          <Pressable 
-          onPress={()=> handleOption(item?.name)}
-          style={{
-            backgroundColor: lookingOptions.includes(item?.name)
-              ? "#4c0a4f"
-              : "white",
-            padding: 16,
-            justifyContent: "center",
-            alignItems: "center",
-            width: 150,
-            margin: 10,
-            borderRadius: 5,
-            borderColor: "#4c0a4f",
-            // borderWidth: lookingOptions.includes(item?.name)
-            //   ? "transparent"
-            //   : 0.7,
-          }}>
+          <Pressable
+            onPress={() => handleOption(item?.name)}
+            style={{
+              backgroundColor: isSelected ? "#4c0a4f" : "white",
+              padding: 16,
+              justifyContent: "center",
+              alignItems: "center",
+              width: 150,
+              margin: 10,
+              borderRadius: 5,
+              borderColor: "#4c0a4f",
+              borderWidth: isSelected ? 0 : 0.7,
+            }}
+          >
             <View>
-              <Text style={{fontFamily:"monospace",  textAlign: "center",
-                        fontWeight: "bold",
-                        fontSize: 13,
-                        color:lookingOptions.includes(item?.name)?"white":"black"}}>{item?.name}</Text>
-              <Text style={{fontFamily:"monospace",  textAlign: "center",
-                        width: 140,
-                        marginTop: 10,
-                        fontSize: 13,
-                        color:lookingOptions.includes(item?.name)?"white":"gray"}}>{item?.description}</Text>
+              <Text
+                style={{
+                  fontFamily: "monospace",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: 13,
+                  color: isSelected ? "white" : "black",
+                }}
+              >
+                {item?.name}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "monospace",
+                  textAlign: "center",
+                  width: 140,
+                  marginTop: 10,
+                  fontSize: 13,
+                  color: isSelected ? "white" : "gray",
+                }}
+              >
+                {item?.description}
+              </Text>
             </View>
           </Pressable>
         );
       }}
-      // keyExtractor={(item, index) => index.toString()}
+      keyExtractor={(item, index) => index.toString()}
     />
-    
+  )}
+</View>
+
+
+<View style={{ marginHorizontal: 14 }}>
+  {option === "Photos" && (
+    <View>
+       <FlatList
+            data={images}
+            renderItem={renderImageItem}
+            keyExtractor={(item, index) => index.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginBottom: 25 }}
+          />
+      <View style={{marginTop:25}}>
+<Text  style={{fontFamily:"monospace"}}>Add a picture of your project.</Text>
+<View style={{flexDirection:"row",alignItems:"center",gap:5,paddingVertical:5,borderRadius:5,marginTop:10,backgroundColor:"#dcdcdc"}}>
+<Ionicons style={{marginLeft:8,color:"gray"}} name="images" size={24} color="black" />
+              <TextInput value={imageUrl} onChangeText={(text)=>setImageUrl(text)} style={{fontFamily:"monospace",color:"gray",marginVertical:10,width:300}} placeholder='Enter your image url'/>
+             
+      </View>
+<TouchableOpacity
+        style={{
+          marginTop: 5,
+          backgroundColor: '#dcdcdc',
+          padding: 10,
+          borderRadius: 5,
+          alignItems: 'center',
+        }}
+        onPress={
+          
+          handleAddImage
+        }>
+        <Text style={{ color: '#4c0a4f',fontWeight:"bold" ,fontFamily:"monospace",fontSize:15}}>Add image URL</Text>
+      </TouchableOpacity>
+      </View>
+    </View>
   )}
 </View>
 
@@ -710,4 +618,11 @@ const handleLogout= async ()=>{
 
 export default index
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  image: {
+    width: 100,
+    height: 100,
+    marginRight: 10,
+    borderRadius: 5,
+  },
+})
