@@ -4,6 +4,8 @@ import { ScrollView } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
+import config from '../config'
+
 import * as Animatable from "react-native-animatable"
 const Profile = ({ item, isEven, userId, setProfiles }) => {
   const colors = ["#F0F8FF", "#FFFFFF"];
@@ -13,7 +15,7 @@ const Profile = ({ item, isEven, userId, setProfiles }) => {
     try {
 
       setLiked(true);
-      await axios.post("http://192.168.1.5:5000/send-like", {
+      await axios.post(`${config.BASE_URL}/send-like`, {
         currentUserId: userId,
         selectedUserId: selectedUserId,
       });
@@ -34,7 +36,7 @@ const Profile = ({ item, isEven, userId, setProfiles }) => {
     try {
 
       setSelected(true);
-      await axios.post("http://192.168.1.5:5000/send-like", {
+      await axios.post(`${config.BASE_URL}/send-like`, {
         currentUserId: userId,
         selectedUserId: selectedUserId,
       });

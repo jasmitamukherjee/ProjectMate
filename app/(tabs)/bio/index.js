@@ -7,6 +7,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import "core-js/stable/atob";
 import {jwtDecode} from "jwt-decode";
 import axios from 'axios';
+import config from '../../../config'
+
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router'
@@ -153,7 +155,7 @@ const index = () => {
 
   },[])
   const fetchUserDescription= async ()=>{
-    try { const response = await axios.get(`http://192.168.1.5:5000/users/${userId}`);
+    try { const response = await axios.get(`${config.BASE_URL}/users/${userId}`);
     console.log(response);
     const user = response.data;
 
@@ -179,7 +181,7 @@ const index = () => {
   const updateUserDescripton= async ()=>{
     try {
       const response = await axios.put(
-        `http://192.168.1.5:5000/users/${userId}/description`,
+        `${config.BASE_URL}/users/${userId}/description`,
         {
           description: description,
         }
@@ -229,7 +231,7 @@ const handleOption= (lookingFor)=>{
 const addLookingFor= async (lookingFor)=>{
   try {
     const response = await axios.put(
-      `http://192.168.1.5:5000/users/${userId}/looking-for`,
+      `${config.BASE_URL}/users/${userId}/looking-for`,
       {
         lookingFor: lookingFor,
       }
@@ -250,7 +252,7 @@ const addLookingFor= async (lookingFor)=>{
 const removeLookingFor = async (lookingFor) => {
   try {
     const response = await axios.put(
-      `http://192.168.1.5:5000/users/${userId}/looking-for/remove`,
+      `${config.BASE_URL}/users/${userId}/looking-for/remove`,
       {
         lookingFor: lookingFor,
       }
@@ -270,7 +272,7 @@ const removeLookingFor = async (lookingFor) => {
 const addKeywords= async (keywords)=>{
   try {
     const response = await axios.put(
-      `http://192.168.1.5:5000/users/${userId}/keywords/add`,
+      `${config.BASE_URL}/users/${userId}/keywords/add`,
       {
         keywords: keywords,
       }
@@ -290,7 +292,7 @@ const addKeywords= async (keywords)=>{
 const removeKeywords = async (keywords)=>{
 try {
   const response = await axios.put(
-    `http://192.168.1.5:5000/users/${userId}/keywords/remove`,
+    `${config.BASE_URL}/users/${userId}/keywords/remove`,
     {
       keywords: keywords,
     }
@@ -315,7 +317,7 @@ const randomImage = getRandomImage()
 const handleAddImage= async ()=>{
  
   try{
-    const response = await axios.post(`http://192.168.1.5:5000/users/${userId}/project-images`,{
+    const response = await axios.post(`${config.BASE_URL}/users/${userId}/project-images`,{
         imageUrl:imageUrl,
         // userId: userId
     });

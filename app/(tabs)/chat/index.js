@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View,ScrollView } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -6,6 +6,8 @@ import { Entypo } from '@expo/vector-icons';
 import "core-js/stable/atob";
 import {jwtDecode} from "jwt-decode";
 import axios from 'axios';
+import config from '../../../config'
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
 import UserChat from '../../../components/UserChat';
@@ -29,7 +31,7 @@ const index = () => {
   const fetchReceivedLikesDetails= async ()=>{
     try {
       const response = await axios.get(
-        `http://192.168.1.5:5000/received-likes/${userId}/details`
+        `${config.BASE_URL}/received-likes/${userId}/details`
       );
 
       console.log(response);
@@ -44,7 +46,7 @@ const index = () => {
   const fetchUserMatches = async ()=>{
     try {
       const response = await axios.get(
-        `http://192.168.1.5:5000/users/${userId}/matches`
+        `${config.BASE_URL}/users/${userId}/matches`
       );
 
       const userMatches = response.data.matches;
@@ -83,7 +85,7 @@ const index = () => {
 console.log("userid from index of chat",userId)
   console.log("matches",matches)
    return (
-    <View style={{ backgroundColor: "white", flex: 1, padding: 10 }}>
+    <ScrollView style={{ backgroundColor: "white", flex: 1, padding: 10 }}>
 
       <View  style={{
           flexDirection: "row",
@@ -120,7 +122,7 @@ console.log("userid from index of chat",userId)
           <UserChat key={index} userId={userId} item={item}/>
         ))}
       </View>
-    </View>
+    </ScrollView>
   )
 }
 

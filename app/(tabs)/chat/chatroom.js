@@ -16,6 +16,7 @@ import {
   import { MaterialCommunityIcons } from "@expo/vector-icons";
   import { MaterialIcons } from "@expo/vector-icons";
 
+  import config from '../../../config'
 
   import { io } from "socket.io-client";
   import axios from "axios";
@@ -27,7 +28,7 @@ import {
     const [messages, setMessages] = useState([]);
     const [selectedMessages, setSelectedMessages] = useState([]);
 
-    const socket = io("http://192.168.1.5:8000");
+    const socket = io(config.BASE_CHAT);
     socket.on("connect", () => {
       console.log("Connected to the Socket.IO server");
     });
@@ -115,7 +116,7 @@ import {
     const deleteMessages = async (messageIds) => {
       console.log("trying to delete")
       try {
-        const response = await axios.post("http://192.168.1.5:5000/delete", {
+        const response = await axios.post(`${config.BASE_URL}/delete`, {
           messages: messageIds, // Send selectedMessages array as messages
         });
         if (response.status === 200) {
@@ -138,7 +139,7 @@ import {
         const receiverId = params?.receiverId;
         console.log("sender id",senderId)
         console.log("recieevr id",receiverId)
-        const response = await axios.get("http://192.168.1.5:5000/messages", {
+        const response = await axios.get(`${config.BASE_URL}/messages`, {
           params: { senderId, receiverId },
         });
   

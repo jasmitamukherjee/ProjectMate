@@ -1,5 +1,5 @@
 
-
+const crypto=require("crypto")
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
@@ -10,7 +10,9 @@ const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 
 app.use(cors({
-  origin: '*'
+  origin: '*',
+  credentials:true,
+  
 }));
 const { secretKey } = require("./db");
 app.use(bodyParser.urlencoded({ extended: false }));

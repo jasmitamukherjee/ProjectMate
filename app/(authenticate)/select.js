@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useRouter } from 'expo-router';
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import "core-js/stable/atob";
+import config from '../../config'
+
 import {jwtDecode} from "jwt-decode";
 
 const select = () => {
@@ -24,7 +26,7 @@ const select = () => {
   },[])
   const updateUserGender = async () => {
     try{
-        const response = await axios.put(`http://192.168.1.5:5000/users/${userId}/gender`,{
+        const response = await axios.put(`${config.BASE_URL}/users/${userId}/gender`,{
             gender:option
         });
 

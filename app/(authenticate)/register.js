@@ -5,6 +5,7 @@ import { AntDesign } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import axios from 'axios'
+import config from '../../config'
 const register = () => {
   const [name, setName] = useState("");
 
@@ -19,7 +20,7 @@ const register = () => {
       password: password,
     };
  
-    axios.post("http://192.168.1.5:5000/register", user)
+    axios.post(`${config.BASE_URL}/register`, user,{ withCredentials: true })
   .then((response) => {
     console.log(response);
     Alert.alert('Registration successful', 'You have been registered successfully');

@@ -4,6 +4,8 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import axios from 'axios'
+import config from '../../config'
+
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const login = () => {
@@ -32,7 +34,7 @@ checkLoginStatus()
       password: password,
     };
 
-    axios.post("http://192.168.1.5:5000/login",user).then((response) => {
+    axios.post(`${config.BASE_URL}/login`,user).then((response) => {
         console.log(response);
         const token = response.data.token;
         AsyncStorage.setItem("auth",token);

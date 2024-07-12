@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import { AntDesign } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import axios from 'axios';
+import config from '../../../config'
 
 const select = () => {
     const router= useRouter()
@@ -12,7 +13,7 @@ const select = () => {
     const userId = params?.userId
     // const handleMatch = async (selectedUserId) => {
     //     try {
-    //       await axios.post("http://192.168.1.5:5000/create-match", {
+    //       await axios.post("${config.BASE_URL}/create-match", {
     //         currentUserId: userId,
     //         selectedUserId: selectedUserId,
     //       });
@@ -29,7 +30,7 @@ const select = () => {
       // console.log("user id",userId)
      
       try {
-        await axios.post("http://192.168.1.5:5000/create-match", {
+        await axios.post(`${config.BASE_URL}/create-match`, {
           currentUserId: userId,
           selectedUserId: selectedUserId,
         });

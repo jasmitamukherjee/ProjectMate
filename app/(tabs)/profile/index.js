@@ -6,6 +6,8 @@ import {jwtDecode} from "jwt-decode";
 import axios from 'axios';
 import { FlatList } from 'react-native';
 import Profile from "../../../components/Profile"
+import config from '../../../config'
+
 const index = () => {
   const [userId, setUserId] = useState("")
   const [user,setUser] = useState("")
@@ -22,7 +24,7 @@ const index = () => {
 
   },[])
   const fetchUserDescription= async ()=>{
-    try { const response = await axios.get(`http://192.168.1.5:5000/users/${userId}`);
+    try { const response = await axios.get(`${config.BASE_URL}/users/${userId}`);
     console.log(response);
     const user = response.data;
 
@@ -40,7 +42,7 @@ const index = () => {
   }  
   const fetchPofiles =  async ()=>{
     try {
-      const response = await axios.get("http://192.168.1.5:5000/profiles", {
+      const response = await axios.get(`${config.BASE_URL}/profiles`, {
         params: {
           userId: userId,
           gender: user?.gender,
